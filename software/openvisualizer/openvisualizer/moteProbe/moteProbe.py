@@ -31,6 +31,7 @@ from   openvisualizer.moteConnector import OpenParser
 BAUDRATE_TELOSB = 115200
 BAUDRATE_GINA   = 115200
 BAUDRATE_WSN430 = 115200
+BAUDRATE_IOTLAB = 500000
 
 def findSerialPorts():
     '''
@@ -62,7 +63,7 @@ def findSerialPorts():
             portMask = '/dev/tty.usbserial-*'
         else:
             portMask = '/dev/ttyUSB*'
-        serialports = [(s,BAUDRATE_GINA) for s in glob.glob(portMask)]
+        serialports = [(s,BAUDRATE_IOTLAB) for s in glob.glob(portMask)]
     
     # log
     log.info("discovered following COM port: {0}".format(['{0}@{1}'.format(s[0],s[1]) for s in serialports]))
