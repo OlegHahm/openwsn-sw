@@ -193,14 +193,16 @@ class moteProbe(threading.Thread):
                         break
                     else:
                         for rxByte in rxBytes:
+                            #print("rxByte: {0}".format(u.formatStringBuf(rxByte))
                             if      (
                                         (not self.busyReceiving)             and 
                                         self.lastRxByte==self.hdlc.HDLC_FLAG and
                                         rxByte!=self.hdlc.HDLC_FLAG
                                     ):
                                 # start of frame
+                                #print("{0}: start of hdlc frame {1} {2}".format(self.name, u.formatStringBuf(self.hdlc.HDLC_FLAG), u.formatStringBuf(rxByte)))
                                 if log.isEnabledFor(logging.DEBUG):
-                                    log.debug("{0}: start of hdlc frame {1} {2}".format(self.name, u.formatStringBuf(self.hdlc.HDLC_FLAG), u.formatStringBuf(rxByte)))
+                                    print("{0}: start of hdlc frame {1} {2}".format(self.name, u.formatStringBuf(self.hdlc.HDLC_FLAG), u.formatStringBuf(rxByte)))
                                 self.busyReceiving       = True
                                 self.inputBuf            = self.hdlc.HDLC_FLAG
                                 self.inputBuf           += rxByte
@@ -216,8 +218,9 @@ class moteProbe(threading.Thread):
                                         rxByte==self.hdlc.HDLC_FLAG
                                     ):
                                 # end of frame
+                                #print("{0}: end of hdlc frame {1} ".format(self.name, u.formatStringBuf(rxByte)))
                                 if log.isEnabledFor(logging.DEBUG):
-                                    log.debug("{0}: end of hdlc frame {1} ".format(self.name, u.formatStringBuf(rxByte)))
+                                    print("{0}: end of hdlc frame {1} ".format(self.name, u.formatStringBuf(rxByte)))
                                 self.busyReceiving       = False
                                 self.inputBuf           += rxByte
                                 
@@ -227,14 +230,16 @@ class moteProbe(threading.Thread):
                                     if log.isEnabledFor(logging.DEBUG):
                                         log.debug("{0}: {2} dehdlcized input: {1}".format(self.name, u.formatStringBuf(self.inputBuf), u.formatStringBuf(tempBuf)))
                                 except OpenHdlc.HdlcException as err:
-                                    log.warning('{0}: invalid serial frame: {2} {1}'.format(self.name, err, u.formatStringBuf(tempBuf)))
+                                    print('{0}: invalid serial frame: {2} {1}'.format(self.name, err, u.formatStringBuf(tempBuf)))
                                 else:
                                     if self.inputBuf==chr(OpenParser.OpenParser.SERFRAME_MOTE2PC_REQUEST):
+                                        print("if")
                                         with self.outputBufLock:
                                             if self.outputBuf:
                                                 outputToWrite = self.outputBuf.pop(0)
                                                 self.serial.write(outputToWrite)
                                     else:
+                                        print("else")
                                         # dispatch
                                         dispatcher.send(
                                             sender        = self.name,

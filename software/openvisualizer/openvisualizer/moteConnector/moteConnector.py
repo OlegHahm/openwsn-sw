@@ -70,7 +70,7 @@ class moteConnector(eventBusClient.eventBusClient):
         
         # log
         if log.isEnabledFor(logging.DEBUG):
-            log.debug("received input={0}".format(input))
+            print("received input={0}".format(input))
         
         # parse input
         try:
